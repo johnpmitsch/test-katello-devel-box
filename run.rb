@@ -3,7 +3,7 @@ require "fileutils"
 
 # Script to show current katello developer happiness with gifs
 
-box_name = "centos7-devel"
+box_name = "centos7-katello-devel"
 command = "vagrant up #{box_name}"
 forklift_location="/home/jomitsch/sat-deploy/forklift"
 boxes_location = File.join(forklift_location, "vagrant/boxes.d/")
