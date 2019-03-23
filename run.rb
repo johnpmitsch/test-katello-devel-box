@@ -21,14 +21,22 @@ Dir.chdir(forklift_location) do |dir|
 		File.join(boxes_location, "99-local.yaml"))
   `vagrant destroy -f #{box_name}`
   `#{command} &> /tmp/console.out`
-end
 
-if $?.success?
-  puts "success"
-  FileUtils.cp(File.join(script_location, "success.html"), webpage_location)
-else
-  puts "failure"
-  FileUtils.cp(File.join(script_location, "failure.html"), webpage_location)
+  if $?.success?
+    puts "success"
+    FileUtils.cp(File.join(script_location, "success.html"), webpage_location)
+
+    # Create stable image
+    stable_box_image = 'centos7-katello-devel-stable.box'
+    `vagrant package centos7-katello-devel --output #{stable_box_image}`
+    hosted_image_dir = `#{apache_location}pub/devbox`
+    `cp -f #{forklift_location}/#{stable_box_image} #{hosted_image_dir}`
+    `cp -f #{forklift_location}/.vagrant/machines/#{box_name}/libvirt/private_key #{hosted_image_dir}`  
+    `chmod 644 #{hosted_image_dir}/private_key`
+  else
+    puts "failure"
+    FileUtils.cp(File.join(script_location, "failure.html"), webpage_location)
+  end
 end
 
 FileUtils.cp("/tmp/console.out", File.join(apache_location, "console.out"))
