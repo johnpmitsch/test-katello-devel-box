@@ -29,7 +29,7 @@ Dir.chdir(forklift_location) do |dir|
     # Create stable image
     stable_box_image = 'centos7-katello-devel-stable.box'
     `vagrant package centos7-katello-devel --output #{stable_box_image}`
-    hosted_image_dir = `#{apache_location}pub/devbox`
+    hosted_image_dir = "#{apache_location}pub/devbox"
     `cp -f #{forklift_location}/#{stable_box_image} #{hosted_image_dir}`
     `cp -f #{forklift_location}/.vagrant/machines/#{box_name}/libvirt/private_key #{hosted_image_dir}`  
     `chmod 644 #{hosted_image_dir}/private_key`
