@@ -15,7 +15,7 @@ hosted_image_dir = "#{apache_location}pub/devbox"
 script_location = "/home/jomitsch/test-katello-devel-box"
 current_date = Time.now
 
-FileUtils.rm("/tmp/console.out")
+FileUtils.rm("/tmp/console.out") if File.exist?("/tmp/console.out")
 
 Dir.chdir(forklift_location) do |dir|
   `git fetch --all`
