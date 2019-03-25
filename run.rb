@@ -1,14 +1,17 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
+
 require "fileutils"
 
 # Script to show current katello developer happiness with gifs
 
 box_name = "centos7-katello-devel"
+stable_box_image = 'centos7-katello-devel-stable.box'
 command = "vagrant up #{box_name}"
 forklift_location="/home/jomitsch/sat-deploy/forklift"
 boxes_location = File.join(forklift_location, "vagrant/boxes.d/")
 apache_location="/var/www/html/"
 webpage_location = File.join(apache_location, "index.html")
+hosted_image_dir = "#{apache_location}pub/devbox"
 script_location = "/home/jomitsch/test-katello-devel-box"
 current_date = Time.now
 
@@ -27,9 +30,8 @@ Dir.chdir(forklift_location) do |dir|
     FileUtils.cp(File.join(script_location, "success.html"), webpage_location)
 
     # Create stable image
-    stable_box_image = 'centos7-katello-devel-stable.box'
-    `vagrant package centos7-katello-devel --output #{stable_box_image}`
-    hosted_image_dir = "#{apache_location}pub/devbox"
+    `rm -rf #{stable_box_image}`
+    `vagrant package #{box_name} --output #{stable_box_image}`
     `cp -f #{forklift_location}/#{stable_box_image} #{hosted_image_dir}`
     `cp -f #{forklift_location}/.vagrant/machines/#{box_name}/libvirt/private_key #{hosted_image_dir}`  
     `chmod 644 #{hosted_image_dir}/private_key`
